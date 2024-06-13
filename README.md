@@ -1,4 +1,4 @@
-# spinal-organ-api-otis
+# spinal-organ-api-ga
 Simple BOS-GA api connector to device data
 
 ## Getting Started
