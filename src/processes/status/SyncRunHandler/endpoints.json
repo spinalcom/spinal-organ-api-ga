@@ -1,0 +1,64 @@
+{
+    "types":[
+        {
+            "type":"M.T.A.",
+            "endpoints": [
+                {"ref":"mode","name":"Mode réel","unite":"","commande":"0","refgenre":"244","refp":"244003","pgroupe":"2"},
+                {"ref":"etat","name":"Etat réel","unite":"","commande":"0","refgenre":"244","refp":"244004","pgroupe":"1"},
+                {"ref":"on_off","name":"Marche/Arrêt","unite":"","commande":"0","refgenre":"244","refp":"244005","pgroupe":"2"},
+                {"ref":"tcsi","name":"Consigne Température réelle","unite":"°C","commande":"0","refgenre":"244","refp":"244007","pgroupe":"2","pcommun":"6"},
+                {"ref":"tamb","name":"Température air intérieur","unite":"°C","commande":"0","refgenre":"244","refp":"244008","pgroupe":"2","pcommun":"5"},
+                {"ref":"co2","name":"Concentration CO2","unite":"ppm","commande":"0","refgenre":"244","refp":"244019","pgroupe":"2"},
+                {"ref":"vitfan","name":"Niveau ventilation réel","unite":"","commande":"0","refgenre":"244","refp":"244022","pgroupe":"2"},
+                {"ref":"puissance","name":"Puissance instantanée","unite":"W","commande":"0","refgenre":"244","refp":"244031","pgroupe":"2","pcommun":"2"},
+                {"ref":"conso","name":"Energie totale consommée","unite":"kWh","commande":"0","refgenre":"244","refp":"244027","pgroupe":"2"},
+                {"ref":"code_alarme","name":"Synthèse-Alarme","unite":"","commande":"0","refgenre":"244","refp":"244090","pgroupe":"2","legende":"0=Aucune, 1=dTh-Thermostat, 2=ThA-Thermostat Auto, 3=P-Pressostat, 4=Fv-Filtre, 6=Pb Liaison, 8=PbTerm, "},
+                {"ref":"code_err","name":"Code_ErreurCom","unite":"","commande":"0","refgenre":"244","refp":"244094","pgroupe":"2","legende":""}
+            ] 
+        },
+        {
+            "type":"Igalum",
+            "endpoints": [
+                {"ref":"tamb","name":"Temperature ambiante (°C)","unite":"","commande":"0","refgenre":"89","refp":"89028","pgroupe":"1","pcommun":"5"},
+                {"ref":"presence","name":"Présence","unite":"","commande":"0","refgenre":"89","refp":"89004","pgroupe":"1","pcommun":"9"},
+                {"ref":"co2","name":"Concentration CO2 (ppm)","unite":"","commande":"0","refgenre":"89","refp":"89029","pgroupe":"1","pcommun":"7"},
+                {"ref":"ecl_mes","name":"Eclairement - Mesure Cellule (lux)","unite":"","commande":"0","refgenre":"89","refp":"89005","pgroupe":"1","pcommun":"8"},
+                {"ref":"hygro","name":"Humidité relative (%)","unite":"","commande":"0","refgenre":"89","refp":"89031","pgroupe":"1","pcommun":"6"}
+            ]
+        },
+        {
+            "type":"Store",
+            "endpoints": [
+                {"ref":"fenetre","name":"Etat fenetre","unite":"","commande":"0","refgenre":"12","refp":"12005","pgroupe":"2","legende":"1=Ouvert, 0=Fermé"},
+                {"ref":"mot1","name":"Mode","unite":"","commande":"0","refgenre":"12","refp":"12002","pgroupe":"2","legende":"0=Intermédiaire, 1=Fermé, 2=Ouvert, 3=ouvre, 4=se ferme, 5=ouvre lent, 6=se ferme lent"},
+                {"ref":"code_alarme","name":"Synthèse-Alarme","unite":"","commande":"0","refgenre":"12","refp":"12090","pgroupe":"2","legende":"0=Aucune, 1=defmoteur, 2=deftimeout, 3=defcourant, 4=defeeprom, 5=Défaut, 6=Pb Com, 8=PbTerm"},
+                {"ref":"code_err","name":"Code_ErreurCom","unite":"","commande":"0","refgenre":"12","refp":"12094","pgroupe":"2","legende":""}
+            ]
+        },
+        {
+            "type":"Température ambiante",
+            "endpoints": [
+                {"ref":"tamb","name":"Température ambiante","unite":"°C","commande":"0","refgenre":"93","refp":"93002","pgroupe":"1"}
+            ]
+        },
+        {
+            "type":"Circuit dalle active",
+            "endpoints": [
+                {"ref":"gestda_cmdlvlpwr","name":"Commande niveau de puissance","unite":"","commande":"0","refgenre":"94","refp":"94010","pgroupe":"1"},
+                {"ref":"hydcrt_vlv_vlvpos","name":"Position vanne","unite":"%","commande":"0","refgenre":"94","refp":"94039","pgroupe":"1"}
+            ]
+        },
+        {
+            "type":"bnenergyvalve",
+            "endpoints": [
+                {"ref":"t1_unitsel","name":"Temperature 1 (remote) in selected unit","unite":"","commande":"0","refgenre":"101","refp":"101042","pgroupe":"1"},
+                {"ref":"t2_unitsel","name":"Temperature 2 (Flow Body) in selected unit","unite":"","commande":"0","refgenre":"101","refp":"101043","pgroupe":"1"},
+                {"ref":"unitselflow","name":"Unit Selection Flow","unite":"","commande":"0","refgenre":"101","refp":"101046","pgroupe":"1"},
+                {"ref":"unitselpower","name":"Unit Selection Power","unite":"","commande":"0","refgenre":"101","refp":"101047","pgroupe":"1"},
+                {"ref":"heatingenergy_unitsel","name":"Heating Energy in selected unit","unite":"","commande":"0","refgenre":"101","refp":"101013","pgroupe":"1"},
+                {"ref":"heatingpower_unitsel","name":"Heating Power in selected unit","unite":"","commande":"0","refgenre":"101","refp":"101014","pgroupe":"1"}
+            ]
+        }
+    ]
+}
+

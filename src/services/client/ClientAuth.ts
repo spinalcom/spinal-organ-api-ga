@@ -4,7 +4,8 @@ import axios, { AxiosProxyConfig, AxiosRequestConfig, AxiosInstance } from 'axio
 import * as axiosRetry from 'axios-retry';
 import HmacSHA256 from 'crypto-js/hmac-sha256';
 import Base64 from 'crypto-js/enc-base64'
-import { DeviceInfoResponse } from './Interfaces';
+import { IDeviceInfoResponse } from '../../interfaces/api/IDeviceInfoResponse';
+
 
 export class ClientApi {
     private static instance: ClientApi;
@@ -90,7 +91,7 @@ export class ClientApi {
         }
     }
 
-    async getDeviceInfo(deviceId : number): Promise<DeviceInfoResponse> {
+    async getDeviceInfo(deviceId : number): Promise<IDeviceInfoResponse> {
         await this.ensureTokenValid();
         const config : AxiosRequestConfig = {
             headers: {

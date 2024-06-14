@@ -17,7 +17,7 @@ SPINALHUB_PROTOCOL=                         # The protocol for connecting to the
 SPINALHUB_PORT=                             # The port for connecting to the spinalhub
 DIGITALTWIN_PATH=                           # The path of the digital twin in the spinalhub
 SPINAL_ORGAN_NAME=                          # The name of the organ
-SPINAL_CONFIG_PATH=                         # The path of the config file in the spinalhub exemple : /etc/Organs/otis
+SPINAL_CONFIG_PATH=                         # The path of the config file in the spinalhub exemple : /etc/Organs/GA
 
 NETWORK_NAME=                               # The name of the network
 VIRTUAL_NETWORK_NAME=                       # The name of the virtual network

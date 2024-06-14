@@ -26,7 +26,7 @@ import { SpinalGraphService, SpinalContext, SpinalGraph, SpinalNode } from 'spin
 import { GEO_BUILDING_TYPE, GEO_FIND_BUILDING, GEO_FLOOR_TYPE, GEO_ROOM_TYPE } from '../../constants';
 import OrganConfigModel from '../../model/OrganConfigModel';
 import IStatus from './IStatus';
-import SyncRunPull from './SyncRunHandler/SyncRunPull';
+import SyncRunPullApi from './SyncRunHandler/SyncRunPullApi';
 import { join as resolvePath } from 'path';
 import { NetworkService } from "spinal-model-bmsnetwork";
 
@@ -38,14 +38,14 @@ import { NetworkService } from "spinal-model-bmsnetwork";
 export default class SyncRun implements IStatus {
   graph: SpinalGraph<any>;
   config: OrganConfigModel;
-  syncRunPull: SyncRunPull;
+  syncRunPull: SyncRunPullApi;
   nwService: NetworkService;
 
   constructor(graph: SpinalGraph<any>, config: OrganConfigModel,nwService: NetworkService) {
     this.graph = graph;
     this.config = config;
     this.nwService = nwService;
-    this.syncRunPull = new SyncRunPull(graph, config, nwService);
+    this.syncRunPull = new SyncRunPullApi(graph, config, nwService);
     
   }
 
@@ -53,7 +53,7 @@ export default class SyncRun implements IStatus {
   async start(): Promise<number> {
     console.log('start SyncRun');
     await this.syncRunPull.init();
-    //await this.syncRunPull.run();
+    await this.syncRunPull.run();
     return 0;
   }
 

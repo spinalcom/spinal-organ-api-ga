@@ -45,14 +45,22 @@ import {
 } from '../../../model/InputData/InputDataModel/InputDataModel';
 import { SpinalServiceTimeseries } from 'spinal-model-timeseries';
 import { ClientApi } from '../../../services/client/ClientAuth';
-import { DeviceInfo, DeviceInfoResponse, DeviceMeasure } from '../../../services/client/Interfaces';
+import { IDeviceInfo } from '../../../interfaces/api/IDeviceInfo';
+import { IDeviceMeasure } from '../../../interfaces/api/IDeviceMeasure';
+import { IDeviceInfoResponse } from '../../../interfaces/api/IDeviceInfoResponse';
+import { IFileInfo} from '../../../interfaces/inputFile/IFileInfo';
+import { IType } from '../../../interfaces/inputFile/IType';
+import { IEndpoint } from '../../../interfaces/inputFile/IEndpoint';
+import { IMeasure } from '../../../interfaces/api/IMeasure';
+import jsonData from './endpoints.json'
+
 /**
  * Main purpose of this class is to pull tickets from client.
  *
  * @export
  * @class SyncRunPull
  */
-export class SyncRunPull {
+export class SyncRunPullApi {
   graph: SpinalGraph<any>;
   config: OrganConfigModel;
   interval: number;
@@ -99,7 +107,7 @@ export class SyncRunPull {
     });
   }
 
-  async createDevice(device : DeviceInfo){
+  async createDevice(device : IDeviceInfo){
     const deviceNodeModel = new InputDataDevice(device.device_name, 'device'); 
       await this.nwService.updateData(deviceNodeModel);
       console.log('Created device ', device.device_name);
@@ -111,16 +119,16 @@ export class SyncRunPull {
     const dateObj = new Date(dateString);
     return dateObj.getTime();
   }
-  async addEndpointAttributes(node :SpinalNode<any>, measure : DeviceMeasure ){
+  async addEndpointAttributes(node :SpinalNode<any>, measure : IDeviceMeasure ){
     await attributeService.addAttributeByCategoryName(node,'GA','measure_code',measure.measure_code,'string')
   }
 
-  async addDeviceAttributes(node :SpinalNode<any>, device : DeviceInfo, deviceId: number){
+  async addDeviceAttributes(node :SpinalNode<any>, device : IDeviceInfo, deviceId: number){
     await attributeService.addAttributeByCategoryName(node,'GA','device_id',`${deviceId}`,'number')
     await attributeService.addAttributeByCategoryName(node,'GA','device_type',device.device_type,'string')
   }
 
-  async createEndpoint(deviceId: string, measure: DeviceMeasure , initialValue : number) {
+  async createEndpoint(deviceId: string, measure: IDeviceMeasure , initialValue : number) {
     const context = this.networkContext;
     const endpointNodeModel = new InputDataEndpoint(
       measure.measure_name ?? 'Unnamed',
@@ -162,7 +170,17 @@ export class SyncRunPull {
     const devices = await this.apiClient.getDevices()
     this.deviceIds = devices;
     for(const deviceId of devices){
-      const deviceInfo : DeviceInfoResponse = await this.apiClient.getDeviceInfo(deviceId);
+      const deviceInfo : IDeviceInfoResponse = await this.apiClient.getDeviceInfo(deviceId);
+      let endpointsToKeep : IDeviceMeasure[] = deviceInfo.device_measures;
+      if(process.env.EXECUTION_MODE==='1'){
+        const shouldSkip = await this.shouldSkipDevice(deviceInfo);
+        if (shouldSkip) {
+          console.log('Skipping Device : ', deviceInfo.device_info.device_name , ' of id : ', deviceId);
+          continue;
+        }
+        endpointsToKeep = await this.filterEndpointsByType(deviceInfo);
+      }
+
       let devices = await this.networkContext.findInContext(
         this.networkContext,
         (node) => node.info.name.get() === deviceInfo.device_info.device_name
@@ -183,7 +201,11 @@ export class SyncRunPull {
       this.addDeviceAttributes(deviceNode,deviceInfo.device_info,deviceId)
 
       const endpointNodes = await deviceNode.getChildren('hasBmsEndpoint');
-      for(const measure of deviceInfo.device_measures){
+
+
+     
+
+      for(const measure of endpointsToKeep){
         const measureValue = measure.measures?.value ?? NaN;
 
         let endpointNode = endpointNodes.find((node) => node.info.name.get() === measure.measure_name);
@@ -208,6 +230,39 @@ export class SyncRunPull {
     }
   }
 
+  loadEndpointsFromFile(): IFileInfo {
+    return jsonData;
+  }
+
+  async shouldSkipDevice(deviceInfo: IDeviceInfoResponse){
+    const fileInfo = this.loadEndpointsFromFile();
+    const typeInfo = fileInfo.types.find((type) => deviceInfo.device_info.device_type.toUpperCase().includes(type.type.toUpperCase()) ||
+    type.type.toUpperCase().includes(deviceInfo.device_info.device_type.toUpperCase()))
+    if(!typeInfo) return true;
+    return false;
+  }
+
+  async filterEndpointsByType(deviceInfo: IDeviceInfoResponse){
+    console.log('Filtering endpoints by type...')
+    const endpointsToKeep : IDeviceMeasure[] = [];
+    const fileInfo = this.loadEndpointsFromFile();
+    const typeInfo = fileInfo.types.find((type) => 
+      deviceInfo.device_info.device_type.toUpperCase().includes(type.type.toUpperCase()) ||
+      type.type.toUpperCase().includes(deviceInfo.device_info.device_type.toUpperCase()))
+    if(!typeInfo) return [];
+    console.log('Type recognized : ', typeInfo.type)
+    for (const endpoint of typeInfo.endpoints){
+      const measure = deviceInfo.device_measures.find((measure) => measure.measure_code === endpoint.ref);
+      if(measure){
+        endpointsToKeep.push(measure);
+        console.log('Endpoint kept : ', measure.measure_name) 
+      }
+      
+        
+    }
+    console.log(`Filtering process done ! Kept : ${endpointsToKeep.length} endpoints`)
+    return endpointsToKeep;
+  }
   
 
   async init(): Promise<void> {
@@ -223,6 +278,7 @@ export class SyncRunPull {
   }
 
   async run(): Promise<void> {
+    console.log("Starting run...")
     this.running = true;
     const timeout = parseInt(process.env.PULL_INTERVAL)
     await this.waitFct(timeout);
@@ -250,4 +306,4 @@ export class SyncRunPull {
     this.running = false;
   }
 }
-export default SyncRunPull;
+export default SyncRunPullApi;
